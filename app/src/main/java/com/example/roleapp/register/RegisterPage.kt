@@ -100,6 +100,14 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
         mutableStateOf("")
     }
 
+    var emailError_ by remember {
+        mutableStateOf(false)
+    }
+
+    var passError_ by remember {
+        mutableStateOf(false)
+    }
+
     LaunchedEffect(registerResult) {
         registerResult?.let {
             if (it) {
@@ -109,6 +117,18 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
             } else {
                 message = "User already registered. Use another email"
             }
+        }
+    }
+
+    LaunchedEffect(emailError) {
+        emailError?.let {
+            emailError_ = it
+        }
+    }
+
+    LaunchedEffect(password) {
+        passwordError?.let {
+            passError_ = it
         }
     }
 
@@ -127,7 +147,7 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
             CustomTextField(textField = email, onChange = {
                 password = it
             }, label = "Email", icon = Icons.Outlined.Email, inputType = KeyboardType.Email)
-            if (emailError!!) {
+            if (emailError_) {
                 Text(text = "Invalid email address", color = Color.Red,
                     modifier = Modifier.padding(start = 16.dp)
                 )
@@ -139,7 +159,7 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
                 password = it
             }, label = "Password", icon = Icons.Outlined.Lock, endIcon = Icons.Outlined.ArrowDropDown,
                 inputType = KeyboardType.Password)
-            if (passwordError!!) {
+            if (passError_) {
                 Text(text = "Password must be at least 8 characters, contains uppercase and digits", color = Color.Red,
                     modifier = Modifier.padding(start = 16.dp)
                 )

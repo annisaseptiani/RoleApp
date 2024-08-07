@@ -2,8 +2,9 @@ package com.example.roleapp.domain.usecase
 
 import android.content.SharedPreferences
 import java.security.MessageDigest
+import javax.inject.Inject
 
-class VerifyPasswordUseCase(private val sharedPreferences: SharedPreferences)  {
+class VerifyPasswordUseCase @Inject constructor(private val sharedPreferences: SharedPreferences)  {
     fun execute(inputPassword: String): Boolean {
         val storedPassword = sharedPreferences.getString("password", null)
         val encryptedInputPass = encryptPassword(inputPassword)

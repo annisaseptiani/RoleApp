@@ -35,8 +35,8 @@ class IUserRepository @Inject constructor(private val userDao: UserDao, private 
         userDao.editUser(name, email, role, id)
     }
 
-    override suspend fun delete(id: Int) : Boolean {
-        return userDao.deleteUser(id)
+    override suspend fun delete(id: Int) {
+        userDao.deleteUser(id)
     }
 
     override suspend fun saveUser(email: String, password: String) {

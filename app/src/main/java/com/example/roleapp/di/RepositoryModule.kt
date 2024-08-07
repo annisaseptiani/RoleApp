@@ -1,6 +1,8 @@
 package com.example.roleapp.di
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.preference.PreferenceManager
 import com.example.roleapp.data.local.UserDao
 import com.example.roleapp.data.remote.RemoteApi
 import com.example.roleapp.domain.repository.remote.IRemoteRepository
@@ -13,6 +15,7 @@ import com.example.roleapp.domain.usecase.RegisterUseCase
 import com.example.roleapp.domain.usecase.UpdateDataUseCase
 import com.example.roleapp.domain.usecase.ValidateEmailUseCase
 import com.example.roleapp.domain.usecase.ValidatePasswordUseCase
+import com.example.roleapp.domain.usecase.VerifyPasswordUseCase
 import com.example.roleapp.ui.theme.navigation.Routes
 import com.example.roleapp.util.EmailValidator
 import com.example.roleapp.util.PasswordValidator
@@ -63,7 +66,7 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun providePasswordValidator(passwordValidator: PasswordValidator) : ValidatePasswordUseCase {
+    fun providePasswordValidatorUseCase(passwordValidator: PasswordValidator) : ValidatePasswordUseCase {
         return ValidatePasswordUseCase(passwordValidator)
     }
     @Provides
@@ -72,4 +75,27 @@ object RepositoryModule {
         return ValidateEmailUseCase(emailValidator)
     }
 
+    @Provides
+    @Singleton
+    fun provideEmailValidator(): EmailValidator {
+        return EmailValidator()
+    }
+
+    @Provides
+    @Singleton
+    fun providePasswordValidator() : PasswordValidator {
+        return PasswordValidator()
+    }
+
+    @Provides
+    @Singleton
+    fun provideSharedPreferences(context: Context): SharedPreferences {
+        return PreferenceManager.getDefaultSharedPreferences(context)
+    }
+
+    @Provides
+    @Singleton
+    fun provideVerifyPasswordUseCase(sharedPreferences: SharedPreferences) : VerifyPasswordUseCase {
+        return VerifyPasswordUseCase(sharedPreferences)
+    }
 }

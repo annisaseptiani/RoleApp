@@ -1,10 +1,12 @@
 package com.example.roleapp.data.local
 
+import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.example.roleapp.data.model.UserEntity
 
+@Dao
 interface UserDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun registerUser(user: UserEntity)
@@ -16,7 +18,7 @@ interface UserDao {
     suspend fun loginUser(email : String, password : String) : UserEntity?
 
     @Query("DELETE FROM user_table WHERE id = :id")
-    suspend fun deleteUser(id : Int) : Boolean
+    suspend fun deleteUser(id : Int)
 
     @Query("UPDATE user_table SET name = :name, email = :email, role = :role WHERE id = :id")
     suspend fun editUser(name : String, email : String, role: String,

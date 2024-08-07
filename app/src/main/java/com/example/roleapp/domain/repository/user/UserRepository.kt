@@ -10,7 +10,7 @@ interface UserRepository {
     suspend fun register(user: User)
     suspend fun update(name : String, email : String,
                        role: String, id: Int)
-    suspend fun delete(id: Int) : Boolean
+    suspend fun delete(id: Int)
     suspend fun saveUser(email: String, password: String)
     suspend fun getUserByEmail(email: String) : UserEntity?
     suspend fun getRole(role:String) : String

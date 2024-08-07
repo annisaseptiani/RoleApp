@@ -87,16 +87,6 @@ class IUserRepositoryTest {
     }
 
     @Test
-    fun `test delete user`() = runBlockingTest {
-        whenever(userDao.deleteUser(1)).thenReturn(true)
-
-        val result = userRepository.delete(1)
-
-        verify(userDao).deleteUser(1)
-        assertEquals(true, result)
-    }
-
-    @Test
     fun `test saveUser`() = runBlockingTest {
         userRepository.saveUser("test@example.com", "password")
 

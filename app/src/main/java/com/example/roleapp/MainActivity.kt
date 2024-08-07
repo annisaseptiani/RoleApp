@@ -22,7 +22,9 @@ import com.example.roleapp.register.RegisterViewModel
 import com.example.roleapp.ui.theme.RoleAppTheme
 import com.example.roleapp.ui.theme.navigation.NavigationGraph
 import com.example.roleapp.userpage.UserViewModel
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val loginViewModel : LoginViewModel by viewModels()
     private val registerViewModel : RegisterViewModel by viewModels()

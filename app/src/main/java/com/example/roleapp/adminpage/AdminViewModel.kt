@@ -73,9 +73,15 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
     }
 
     fun deleteItem(id : Int) {
-        viewModelScope.launch {
-            _deleteItem.value = repository.delete(id)
+        try {
+            viewModelScope.launch {
+                repository.delete(id)
+                _deleteItem.value = true
+            }
+        } catch (e: Exception) {
+            _deleteItem.value = false
         }
+
     }
 
     fun verifyPassword(password: String) {

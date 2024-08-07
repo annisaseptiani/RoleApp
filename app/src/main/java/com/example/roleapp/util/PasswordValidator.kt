@@ -1,6 +1,8 @@
 package com.example.roleapp.util
 
-class PasswordValidator {
+import javax.inject.Inject
+
+class PasswordValidator @Inject constructor(){
     fun isValidPassword(password:String) : Boolean {
         return password.length >= 8 &&
                 password.any { it.isDigit() } &&
