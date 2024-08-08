@@ -5,6 +5,7 @@ import com.example.roleapp.domain.model.User
 import com.example.roleapp.domain.repository.user.UserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.any
 import org.junit.Before
 import org.junit.jupiter.api.Assertions.*
@@ -27,7 +28,7 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `test successful registration`() = runBlockingTest {
+    fun `test successful registration`() = runTest {
         val user = User(username = "testUser", email = "test@example.com", password = "password", role = "user")
         val encryptedPassword = registerUseCase.encryptPassword(user.password)
         val newUser = user.copy(password = encryptedPassword)
