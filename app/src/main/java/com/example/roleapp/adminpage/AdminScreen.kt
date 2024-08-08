@@ -173,7 +173,6 @@ fun InputPassword(viewModel: AdminViewModel, id : Int) {
             } else {
                 error = true
             }
-            viewModel.resetDeleteState()
         }
     }
 
