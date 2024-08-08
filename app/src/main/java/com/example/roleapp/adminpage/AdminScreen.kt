@@ -162,6 +162,7 @@ fun InputPassword(viewModel: AdminViewModel, id : Int) {
 
     val isPasswordVerified by viewModel.verifyPass.collectAsState()
     val context = LocalContext.current
+
     LaunchedEffect(isPasswordVerified) {
         isPasswordVerified?.let {
             if (it) {
@@ -170,8 +171,6 @@ fun InputPassword(viewModel: AdminViewModel, id : Int) {
                 delay(1000)
                 viewModel.hideDeleteDialog()
                 error = false
-            } else {
-                error = true
             }
         }
     }
@@ -183,8 +182,10 @@ fun InputPassword(viewModel: AdminViewModel, id : Int) {
                 Text(text = "Input Password To Delete", modifier = Modifier.padding(5.dp))
                 PasswordField(password = password, onChange = { password = it
                 }, label = "password")
-                CustomButton(text = "Confirm", onClick = { viewModel.verifyPassword(password.text) })
-                if (error) {
+                Box(modifier = Modifier.fillMaxWidth().padding(10.dp).align(Alignment.CenterHorizontally)) {
+                    CustomButton(text = "Confirm", onClick = { viewModel.verifyPassword(password.text) })
+                }
+                if (error==true) {
                     Text(modifier = Modifier.padding(5.dp), text = "Wrong password", color=Color.Red)
                 }
             }
