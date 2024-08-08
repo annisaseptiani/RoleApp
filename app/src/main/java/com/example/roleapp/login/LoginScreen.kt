@@ -85,7 +85,7 @@ fun CardLoginForm(navController: NavController, viewModel: LoginViewModel) {
     LaunchedEffect(loginResult) {
         loginResult?.let {
             if (it != "") {
-                message = "Login Successful"
+                message = "Login Successful!"
                 delay(1000)
                 navController.navigate(it)
             } else {
