@@ -12,7 +12,7 @@ class UpdateDataUseCase @Inject constructor(
         return try {
             val entity: UserEntity? = userRepository.getUserByEmail(email)
             if (entity != null) {
-                userRepository.update(email, username, role, id)
+                userRepository.update(email = email, name = username, role = role, id = id)
                 true
             } else {
                 false

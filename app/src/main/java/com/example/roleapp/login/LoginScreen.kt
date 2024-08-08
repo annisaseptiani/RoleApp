@@ -89,7 +89,7 @@ fun CardLoginForm(navController: NavController, viewModel: LoginViewModel) {
                 delay(1000)
                 navController.navigate(it)
             } else {
-                message = "User not found. Register first"
+                message = "User not found. Wrong password/email not registered"
             }
         }
         viewModel.resetState()
@@ -118,7 +118,7 @@ fun CardLoginForm(navController: NavController, viewModel: LoginViewModel) {
         }
         Spacer(modifier = Modifier.padding(20.dp))
         if (message != "") {
-            Box(modifier = Modifier.background(MainColor)) {
+            Box(modifier = Modifier.background(MainColor).align(Alignment.CenterHorizontally)) {
                 Text(text = message, modifier = Modifier.padding(10.dp))
             }
         }

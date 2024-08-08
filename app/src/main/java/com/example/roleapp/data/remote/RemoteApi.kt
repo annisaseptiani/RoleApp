@@ -9,5 +9,5 @@ interface RemoteApi {
 
     @GET("/photos")
     suspend fun getListPhotos(@Query("page") page : Int,
-                              @Query("limit") limit : Int) : PhotosResponse
+                              @Query("limit") limit : Int) : List<Photos>
 }

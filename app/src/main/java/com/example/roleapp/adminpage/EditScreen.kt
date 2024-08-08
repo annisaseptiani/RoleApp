@@ -74,6 +74,8 @@ fun EditUser(adminViewModel: AdminViewModel, userEntity: UserEntity) {
                 Toast.makeText(context, "Data successfully updated!", Toast.LENGTH_SHORT).show()
                 delay(1000)
                 adminViewModel.hideEditDialog()
+                adminViewModel.listUser()
+                adminViewModel.resetEditState()
             }
         }
     }

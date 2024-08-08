@@ -18,17 +18,16 @@ class UserPagingResource(private val api: RemoteApi) : PagingSource<Int, Photos>
         }
     }
 
-    @RequiresExtension(extension = Build.VERSION_CODES.S, version = 7)
     override suspend fun load(params: LoadParams<Int>): LoadResult<Int, Photos> {
         return try {
-            val currentPage = params.key ?: 0
-            val response = api.getListPhotos(page = currentPage *10, limit = 10)
-            val nextPage = if (response.list.isEmpty()) null else currentPage + 1
-            if (response.list.isNullOrEmpty()) {
+            val currentPage = params.key ?: 1
+            val response = api.getListPhotos(page = currentPage, limit = 10)
+    //        val nextPage = if (response.list.isEmpty()) null else currentPage + 1
+            if (response.isNotEmpty()) {
                 LoadResult.Page(
-                    data = response.list,
+                    data = response,
                     prevKey = if (currentPage ==1) null else currentPage -1,
-                    nextKey = nextPage
+                    nextKey = if (response.isEmpty()) null else currentPage + 1
 
                 )
             } else {
@@ -36,8 +35,6 @@ class UserPagingResource(private val api: RemoteApi) : PagingSource<Int, Photos>
             }
 
         } catch (e: IOException) {
-            LoadResult.Error(e)
-        } catch (e: HttpException) {
             LoadResult.Error(e)
         }
     }

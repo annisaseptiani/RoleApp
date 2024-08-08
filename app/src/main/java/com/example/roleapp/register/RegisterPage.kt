@@ -180,7 +180,7 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
         }
         Spacer(modifier = Modifier.padding(20.dp))
         if (message != "") {
-            Box(modifier = Modifier.background(MainColor)) {
+            Box(modifier = Modifier.background(MainColor).align(Alignment.CenterHorizontally)) {
                 Text(text = message, modifier = Modifier.padding(10.dp))
             }
         }

@@ -61,6 +61,7 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
     fun resetEditState() {
         _editItem.value = false
         _isDeleteDialogOpen.value = false
+        _isEmailValid.value = false
     }
 
     fun showDeleteDialog() {
@@ -118,16 +119,11 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
 
     fun editItem(name : String, role: String, email: String, id: Int) {
         viewModelScope.launch {
-            _editItem.value = updateDataUseCase.execute(email, name, role, id)
+            _editItem.value = updateDataUseCase.execute(email= email, username = name, role =  role, id = id)
         }
     }
 
     fun validateEmail(email: String) {
         _isEmailValid.value = validateEmailUseCase.execute(email)
     }
-
-    fun logoutUser() {
-        repository.loggedOut()
-    }
-
 }
