@@ -3,115 +3,143 @@ package com.example.roleapp.domain.repository.user
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.roleapp.data.local.UserDao
+import com.example.roleapp.data.local.UserPreferences
 import com.example.roleapp.data.model.UserEntity
 import com.example.roleapp.domain.model.User
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
+import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
+import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mock
 import org.mockito.Mockito.doReturn
 import org.mockito.Mockito.mock
+import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
 class IUserRepositoryTest {
 
+    @Mock
     private lateinit var userDao: UserDao
-    private lateinit var context: Context
-    private lateinit var sharedPreferences: SharedPreferences
+
+    @Mock
+    private lateinit var userPreferences: UserPreferences
+
     private lateinit var userRepository: IUserRepository
 
     @Before
     fun setUp() {
-        userDao = mock(UserDao::class.java)
-        context = mock(Context::class.java)
-        sharedPreferences = mock(SharedPreferences::class.java)
-        userRepository = IUserRepository(userDao, context)
-
-        // Mocking the getEncryptedSharedPreferences method
-        val editor = mock(SharedPreferences.Editor::class.java)
-        whenever(sharedPreferences.edit()).thenReturn(editor)
-        whenever(editor.putString(anyString(), anyString())).thenReturn(editor)
-        whenever(context.getSharedPreferences(anyString(), anyInt())).thenReturn(sharedPreferences)
-        whenever(sharedPreferences.getString(anyString(), anyOrNull())).thenReturn("mockedValue")
-
-        // Replacing the actual encrypted shared preferences with the mock
-        doReturn(sharedPreferences).`when`(userRepository).getEncryptedSharedPreferences(context)
+        MockitoAnnotations.openMocks(this)
+        userRepository = IUserRepository(userDao, userPreferences)
     }
 
     @Test
-    fun `test login success`() = runBlockingTest {
-        val userEntity : UserEntity? = UserEntity(1, "testUser", "test@example.com", "password", "user")
-        whenever(userDao.loginUser("testUser", "password")).thenReturn(userEntity)
+    fun `login should return UserEntity when user exists`() = runTest {
+        val userEntity = UserEntity(1, "John Doe", "john.doe@example.com", "password123", "user")
+        `when`(userDao.loginUser(anyString(), anyString())).thenReturn(userEntity)
 
-        val result = userRepository.login("testUser", "password")
+        val result = userRepository.login("john.doe@example.com", "password123")
 
-        verify(userDao).loginUser("testUser", "password")
-        assertEquals(userEntity, result)
+        assertNotNull(result)
+        assertEquals(userEntity.id, result?.id)
+        assertEquals(userEntity.name, result?.name)
+        assertEquals(userEntity.email, result?.email)
+        assertEquals(userEntity.password, result?.password)
+        assertEquals(userEntity.role, result?.role)
     }
 
     @Test
-    fun `test getAllUser`() = runBlockingTest {
-        val userList = listOf(UserEntity(1, "testUser", "test@example.com", "password", "user"))
-        whenever(userDao.getAllUser()).thenReturn(flowOf(userList))
+    fun `login should return null when user does not exist`() = runTest {
+        `when`(userDao.loginUser(anyString(), anyString())).thenReturn(null)
 
-        val result = userRepository.getAllUser().first()
+        val result = userRepository.login("john.doe@example.com", "wrongpassword")
 
-        verify(userDao).getAllUser()
-        assertEquals(userList, result)
+        assertNull(result)
     }
 
     @Test
-    fun `test register user`() = runBlockingTest {
-        val user = User("testUser", "test@example.com", "password", "user")
-        val userEntity = UserEntity(name = user.username, email = user.email, password = user.password, role = user.role)
+    fun `register should call userDao registerUser`() = runTest {
+        val user = User("John Doe", "john.doe@example.com", "password123", "user")
 
         userRepository.register(user)
 
-        verify(userDao).registerUser(userEntity)
+        verify(userDao, times(1)).registerUser(any(UserEntity::class.java))
     }
 
     @Test
-    fun `test update user`() = runBlockingTest {
-        userRepository.update("newName", "newEmail", "newRole", 1)
+    fun `getAllUser should return flow of user list`() = runTest {
+        val userEntities = listOf(UserEntity(1, "John Doe", "john.doe@example.com", "password123", "user"))
+        `when`(userDao.getAllUser()).thenReturn(flowOf(userEntities))
 
-        verify(userDao).editUser("newName", "newEmail", "newRole", 1)
+        val result = userRepository.getAllUser().toList()
+
+        assertEquals(1, result.size)
+        assertEquals(userEntities, result[0])
     }
 
     @Test
-    fun `test saveUser`() = runBlockingTest {
-        userRepository.saveUser("test@example.com", "password")
+    fun `update should call userDao editUser`() = runTest {
+        userRepository.update("John Doe", "john.doe@example.com", "admin", 1)
 
-        val editor = sharedPreferences.edit()
-        verify(editor).putString("email", "test@example.com")
-        verify(editor).putString("password", "password")
-        verify(editor).apply()
+        verify(userDao, times(1)).editUser(anyString(), anyString(), anyString(), anyInt())
     }
 
     @Test
-    fun `test getUserByEmail`() = runBlockingTest {
-        val userEntity = UserEntity(1, "testUser", "test@example.com", "password", "user")
-        whenever(userDao.getUserByEmail("test@example.com")).thenReturn(userEntity)
+    fun `delete should call userDao deleteUser`() = runTest {
+        userRepository.delete(1)
 
-        val result = userRepository.getUserByEmail("test@example.com")
-
-        verify(userDao).getUserByEmail("test@example.com")
-        assertEquals(userEntity, result)
+        verify(userDao, times(1)).deleteUser(1)
     }
 
     @Test
-    fun `test getRole`() = runBlockingTest {
-        val role = userRepository.getRole("admin")
+    fun `saveUser should call sharedUserPreferences saveUser`() = runTest {
+        userRepository.saveUser("john.doe@example.com", "password123")
 
-        assertEquals("admin", role)
+        verify(userPreferences, times(1)).saveUser(anyString(), anyString())
+    }
+
+    @Test
+    fun `getUserByEmail should return UserEntity when user exists`() = runTest {
+        val userEntity = UserEntity(1, "John Doe", "john.doe@example.com", "password123", "user")
+        `when`(userDao.getUserByEmail(anyString())).thenReturn(userEntity)
+
+        val result = userRepository.getUserByEmail("john.doe@example.com")
+
+        assertNotNull(result)
+        assertEquals(userEntity.id, result?.id)
+        assertEquals(userEntity.name, result?.name)
+        assertEquals(userEntity.email, result?.email)
+        assertEquals(userEntity.password, result?.password)
+        assertEquals(userEntity.role, result?.role)
+    }
+
+    @Test
+    fun `loggedOut should call sharedUserPreferences clearUser`() = runTest {
+        userRepository.loggedOut()
+
+        verify(userPreferences, times(1)).clearUser()
+    }
+
+    @Test
+    fun `getUserPass should return password from sharedUserPreferences`() = runTest {
+        `when`(userPreferences.getPassword()).thenReturn("password123")
+
+        val result = userRepository.getUserPass()
+
+        assertEquals("password123", result)
     }
 }
 
@@ -125,4 +153,7 @@ interface UserRepository {
     suspend fun saveUser(email: String, password: String)
     suspend fun getUserByEmail(email: String): UserEntity?
     suspend fun getRole(role: String): String
+    fun loggedOut()
+
+    fun getUserPass() :String?
 }

@@ -1,55 +1,53 @@
 package com.example.roleapp.domain.usecase
 
-import android.content.SharedPreferences
+import com.example.roleapp.domain.repository.user.UserRepository
 import org.junit.Before
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
-import org.mockito.Mockito.mock
+import org.mockito.Mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.`when`
+import org.mockito.MockitoAnnotations
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.whenever
 import java.security.MessageDigest
 
 @RunWith(MockitoJUnitRunner::class)
 class VerifyPasswordUseCaseTest {
 
-    private lateinit var sharedPreferences: SharedPreferences
+    @Mock
+    private lateinit var userRepository: UserRepository
+
     private lateinit var verifyPasswordUseCase: VerifyPasswordUseCase
 
     @Before
     fun setUp() {
-        sharedPreferences = mock(SharedPreferences::class.java)
-        verifyPasswordUseCase = VerifyPasswordUseCase(sharedPreferences)
+        MockitoAnnotations.openMocks(this)
+        verifyPasswordUseCase = VerifyPasswordUseCase(userRepository)
     }
 
     @Test
-    fun `test execute with correct password`() {
+    fun `execute should return true when passwords match`() {
         val inputPassword = "password123"
         val encryptedPassword = encryptPassword(inputPassword)
+        `when`(userRepository.getUserPass()).thenReturn(encryptedPassword)
 
-        // Mock the SharedPreferences behavior
-        whenever(sharedPreferences.getString("password", null)).thenReturn(encryptedPassword)
-
-        // Execute the use case
         val result = verifyPasswordUseCase.execute(inputPassword)
 
-        // Verify the result
         assertTrue(result)
+        verify(userRepository).getUserPass()
     }
 
     @Test
-    fun `test execute with incorrect password`() {
+    fun `execute should return false when passwords do not match`() {
         val inputPassword = "password123"
-        val storedPassword = "differentEncryptedPassword"
+        val wrongPassword = "wrongPassword123"
+        `when`(userRepository.getUserPass()).thenReturn(encryptPassword(wrongPassword))
 
-        // Mock the SharedPreferences behavior
-        whenever(sharedPreferences.getString("password", null)).thenReturn(storedPassword)
-
-        // Execute the use case
         val result = verifyPasswordUseCase.execute(inputPassword)
 
-        // Verify the result
         assertFalse(result)
+        verify(userRepository).getUserPass()
     }
 
     private fun encryptPassword(password: String): String {
