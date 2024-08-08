@@ -61,6 +61,7 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
     fun resetEditState() {
         _editItem.value = false
         _isDeleteDialogOpen.value = false
+        _isEmailValid.value = false
     }
 
     fun showDeleteDialog() {
@@ -125,9 +126,4 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
     fun validateEmail(email: String) {
         _isEmailValid.value = validateEmailUseCase.execute(email)
     }
-
-    fun logoutUser() {
-        repository.loggedOut()
-    }
-
 }

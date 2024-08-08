@@ -1,7 +1,11 @@
 package com.example.roleapp.userpage
 
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +17,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicText
+import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,9 +27,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
@@ -38,6 +47,7 @@ import androidx.paging.compose.LazyPagingItems
 import androidx.paging.compose.collectAsLazyPagingItems
 import coil.compose.AsyncImage
 import com.example.roleapp.data.model.Photos
+import com.example.roleapp.ui.theme.CustomButton
 import com.example.roleapp.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -50,8 +60,8 @@ fun UserScreen(navController: NavHostController, viewModel: UserViewModel) {
     Scaffold(
         topBar = {
                  TopAppBar(title = { Text(
-                     text = "Contacts",
-                     color = Color.White,
+                     text = "User",
+                     color = MainColor,
                      fontWeight = FontWeight.Bold,
                      style = MaterialTheme.typography.titleLarge,
                      textAlign = TextAlign.Center
@@ -59,6 +69,14 @@ fun UserScreen(navController: NavHostController, viewModel: UserViewModel) {
         },
         content = {
             Column(modifier = Modifier.padding(it)) {
+                Row(modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp),
+                    horizontalArrangement = Arrangement.End) {
+                    CustomButton(text = "Logout") {
+                        viewModel.logout(navController)
+                    }
+                }
                 ListPhotos(lazyItems = lazyItems, loadState = loadState)
             }
 
@@ -70,11 +88,11 @@ fun UserScreen(navController: NavHostController, viewModel: UserViewModel) {
 @Composable
 fun ListPhotos(lazyItems : LazyPagingItems<Photos>, loadState: CombinedLoadStates){
     LazyColumn {
-        items(lazyItems.itemCount) {
-            index->
+        items(lazyItems.itemCount) { index ->
             val photos = lazyItems[index]
-            photos?.let { PhotoItem(photosItem =it ) }
+            photos?.let { PhotoItem(photosItem = it) }
         }
+
         when {
             loadState.refresh is LoadState.Loading -> {
                 item {
@@ -120,26 +138,54 @@ fun ListPhotos(lazyItems : LazyPagingItems<Photos>, loadState: CombinedLoadState
 
 @Composable
 fun PhotoItem(photosItem : Photos) {
+    val context= LocalContext.current
     Card(shape = RoundedCornerShape(10), modifier = Modifier
         .padding(20.dp)
         .fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MainColor)) {
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        border = BorderStroke(1.dp, MainColor)
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
-            Box(modifier = Modifier
-                .padding(10.dp)
-                .size(100.dp)
-                .border(border = BorderStroke(1.dp, Color.White), shape = CircleShape)) {
-                AsyncImage(model = photosItem.thumbnailUrl, contentDescription = "thumbnail")
+                AsyncImage(modifier = Modifier
+                    .padding(10.dp)
+                    .size(100.dp),
+                    model = photosItem.thumbnailUrl, contentDescription = "thumbnail")
+             Column(modifier = Modifier.padding(10.dp)) {
+                Text(text = photosItem.id.toString(), style = MaterialTheme.typography.bodyMedium, color = MainColor)
+                Text(text = photosItem.title, style = MaterialTheme.typography.bodyMedium, color = MainColor)
+                 val annotatedString = remember {
+                     buildAnnotatedString {
+                         append(photosItem.url)
+                         addStyle(
+                             style = SpanStyle(
+                                 color = Color.Blue,
+                                 textDecoration = TextDecoration.Underline
+                             ),
+                             start = 0,
+                             end = photosItem.url.length
+                         )
 
-            }
-            Column(modifier = Modifier.padding(10.dp)) {
-                Text(text = photosItem.id.toString(), style = MaterialTheme.typography.bodyMedium, color = Color.White)
-                Text(text = photosItem.title, style = MaterialTheme.typography.bodyMedium, color = Color.White)
-                Text(
-                    text = photosItem.url,
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White, textDecoration = TextDecoration.Underline
-                )
+                         // Add a clickable annotation
+                         addStringAnnotation(
+                             tag = "URL",
+                             annotation = photosItem.url,
+                             start = 0,
+                             end = photosItem.url.length
+                         )
+                     }
+                 }
+
+                 ClickableText(
+                     text = annotatedString,
+                     style = MaterialTheme.typography.bodyMedium,
+                     onClick = { offset ->
+                         annotatedString.getStringAnnotations("URL", offset, offset)
+                             .firstOrNull()?.let { annotation ->
+                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(annotation.item))
+                                 context.startActivity(intent)
+                             }
+                     }
+                 )
             }
         }
     }
