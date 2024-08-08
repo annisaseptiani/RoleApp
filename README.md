@@ -1,6 +1,7 @@
 # Role Application Android
 
-A brief description of what your project does.
+In this application user can login and register, and choose their role. Each role have different functionalities.
+
 
 ## Table of Contents
 
