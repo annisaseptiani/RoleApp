@@ -42,6 +42,7 @@ import androidx.navigation.NavController
 import com.example.roleapp.ui.theme.CustomButton
 import com.example.roleapp.ui.theme.CustomTextField
 import com.example.roleapp.ui.theme.MainColor
+import com.example.roleapp.ui.theme.PasswordField
 import kotlinx.coroutines.delay
 
 @Composable
@@ -91,6 +92,7 @@ fun CardLoginForm(navController: NavController, viewModel: LoginViewModel) {
                 message = "User not found. Register first"
             }
         }
+        viewModel.resetState()
     }
 
     Card(modifier = Modifier
@@ -103,10 +105,8 @@ fun CardLoginForm(navController: NavController, viewModel: LoginViewModel) {
             email=it
         }, label = "Email", icon = Icons.Outlined.Email, inputType = KeyboardType.Email)
         Spacer(modifier = Modifier.padding(30.dp))
-        CustomTextField(textField = password, onChange = {
-            password = it
-        }, label = "Password", icon = Icons.Outlined.Lock, endIcon = Icons.Outlined.ArrowDropDown,
-            inputType = KeyboardType.Password)
+        PasswordField(password = password, onChange = { password = it
+        }, label = "password")
         Spacer(modifier = Modifier.padding(30.dp))
         Box(
             modifier = Modifier

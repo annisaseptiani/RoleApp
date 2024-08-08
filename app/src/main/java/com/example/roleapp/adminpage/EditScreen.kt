@@ -62,7 +62,9 @@ fun EditUser(adminViewModel: AdminViewModel, userEntity: UserEntity) {
         mutableStateOf(userEntity.role)
     }
     val emailError by adminViewModel.emailValidator.observeAsState()
-
+    var emailError_ by remember {
+        mutableStateOf(false)
+    }
     val successEdit by adminViewModel.editItem.collectAsState()
 
     val context = LocalContext.current
@@ -75,24 +77,29 @@ fun EditUser(adminViewModel: AdminViewModel, userEntity: UserEntity) {
             }
         }
     }
-    if (isDialogOpen) {
+    LaunchedEffect(emailError) {
+        emailError?.let {
+            emailError_ = it
+        }
+    }
+    if (isDialogOpen==true) {
         Dialog(onDismissRequest = {adminViewModel.hideEditDialog()}) {
             Card(modifier = Modifier
-                .fillMaxWidth()
+                .wrapContentSize()
                 .padding(start = 30.dp, end = 30.dp), shape = RoundedCornerShape(10),
                 colors = CardDefaults.cardColors(containerColor = Color.White),
                 CardDefaults.cardElevation(defaultElevation = 4.dp)) {
 
                 Spacer(modifier = Modifier.padding(10.dp))
                 CustomTextField(textField = username, onChange = {
-                    email = it
+                    username = it
                 }, label = "Username", icon = Icons.Outlined.Person, inputType = KeyboardType.Text)
                 Spacer(modifier = Modifier.padding(10.dp))
                 Column(Modifier.clickable { adminViewModel.validateEmail(email.text) }) {
                     CustomTextField(textField = email, onChange = {
                         email = it
                     }, label = "Email", icon = Icons.Outlined.Email, inputType = KeyboardType.Email)
-                    if (emailError!!) {
+                    if (emailError_) {
                         Text(
                             text = "Invalid email address", color = Color.Red,
                             modifier = Modifier.padding(start = 16.dp)

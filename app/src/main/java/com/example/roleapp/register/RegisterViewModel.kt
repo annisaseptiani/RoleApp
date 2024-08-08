@@ -17,12 +17,12 @@ class RegisterViewModel @Inject constructor(private val registerUseCase: Registe
     private val validateEmailUseCase: ValidateEmailUseCase,
     private val passwordUseCase: ValidatePasswordUseCase) : ViewModel(){
 
-    private var _registerResult = MutableLiveData<Boolean>()
-    val registerResult : LiveData<Boolean> get() = _registerResult
-    private var _isEmailValid = MutableLiveData<Boolean>()
-    val emailValidator : LiveData<Boolean> get() = _isEmailValid
-    private var isPassStrong = MutableLiveData<Boolean>()
-    val passwordValidator : LiveData<Boolean> get() = isPassStrong
+    private var _registerResult = MutableLiveData<Boolean?>()
+    val registerResult : LiveData<Boolean?> get() = _registerResult
+    private var _isEmailValid = MutableLiveData<Boolean?>()
+    val emailValidator : LiveData<Boolean?> get() = _isEmailValid
+    private var isPassStrong = MutableLiveData<Boolean?>()
+    val passwordValidator : LiveData<Boolean?> get() = isPassStrong
 
     fun register(name : String, email: String,
                  password: String, role : String) {
@@ -38,5 +38,11 @@ class RegisterViewModel @Inject constructor(private val registerUseCase: Registe
 
     fun validatePassword(password: String) {
         isPassStrong.value = passwordUseCase.execute(password)
+    }
+
+    fun resetState() {
+        _registerResult.value = null
+        _isEmailValid.value = null
+        isPassStrong.value = null
     }
 }

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import com.example.roleapp.data.local.UserDao
+import com.example.roleapp.data.local.UserPreferences
 import com.example.roleapp.data.remote.RemoteApi
 import com.example.roleapp.domain.repository.remote.IRemoteRepository
 import com.example.roleapp.domain.repository.remote.RemoteRepository
@@ -36,14 +37,20 @@ object RepositoryModule {
 
     @Provides
     @Singleton
+    fun providePreferencesHelper(appContext: Context): UserPreferences {
+        return UserPreferences(appContext)
+    }
+
+    @Provides
+    @Singleton
     fun providePhotosUseCase(repository: RemoteRepository) : LoadPhotosUseCase {
         return LoadPhotosUseCase(repository)
     }
 
     @Provides
     @Singleton
-    fun provideUserRepository(dao: UserDao, context: Context) : UserRepository {
-        return IUserRepository(dao, context)
+    fun provideUserRepository(dao: UserDao, userSharedPreferences: UserPreferences) : UserRepository {
+        return IUserRepository(dao, userSharedPreferences)
     }
 
     @Provides
@@ -89,13 +96,7 @@ object RepositoryModule {
 
     @Provides
     @Singleton
-    fun provideSharedPreferences(context: Context): SharedPreferences {
-        return PreferenceManager.getDefaultSharedPreferences(context)
-    }
-
-    @Provides
-    @Singleton
-    fun provideVerifyPasswordUseCase(sharedPreferences: SharedPreferences) : VerifyPasswordUseCase {
-        return VerifyPasswordUseCase(sharedPreferences)
+    fun provideVerifyPasswordUseCase(repository: UserRepository) : VerifyPasswordUseCase {
+        return VerifyPasswordUseCase(repository)
     }
 }

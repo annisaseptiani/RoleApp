@@ -6,6 +6,10 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.KeyboardArrowDown
+import androidx.compose.material.icons.filled.KeyboardArrowUp
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -27,13 +31,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 
 @Composable
 fun CustomTextField(textField: TextFieldValue, onChange : (TextFieldValue) -> Unit, label:String, icon: ImageVector,
                     endIcon : ImageVector = Icons.Outlined.Close, inputType : KeyboardType) {
-    OutlinedTextField(modifier = Modifier.padding(start = 30.dp, end = 30.dp), value = textField,
+    OutlinedTextField(modifier = Modifier.padding(start = 30.dp, end = 30.dp).fillMaxWidth(), value = textField,
         onValueChange = onChange, label = { Text(label) },
         placeholder = { Text(label)}, leadingIcon = { Icon(icon, contentDescription = null) },
         trailingIcon = {
@@ -47,9 +53,8 @@ fun CustomTextField(textField: TextFieldValue, onChange : (TextFieldValue) -> Un
 }
 
 @Composable
-fun CustomButton(text: String, onClick : () -> Unit, isClick: Boolean= false) {
-    Button(onClick = { onClick()}, colors = ButtonDefaults.buttonColors(containerColor = Color.Green,
-        disabledContainerColor = Color.Gray), enabled =  isClick) {
+fun CustomButton(text: String, onClick : () -> Unit) {
+    Button(onClick = { onClick()}, colors = ButtonDefaults.buttonColors(containerColor = MainColor)) {
         Text(modifier = Modifier.padding(10.dp), text = text, color = Color.White)
     }
 }
@@ -90,7 +95,32 @@ fun DropdownComponent(
                 }
             }
         }
-
     }
+}
+
+@Composable
+fun PasswordField(password: TextFieldValue, onChange : (TextFieldValue) -> Unit,
+                  label: String) {
+
+    var passwordVisible by remember { mutableStateOf(false) }
+        OutlinedTextField(
+            modifier = Modifier.padding(start = 30.dp, end= 30.dp).fillMaxWidth(),
+            value = password,
+            onValueChange = onChange,
+            label = { Text(label) },
+            singleLine = true,
+            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null) },
+            visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
+            trailingIcon = {
+                val image = if (passwordVisible) {
+                    Icons.Filled.KeyboardArrowUp
+                } else {
+                    Icons.Filled.KeyboardArrowDown
+                }
+                IconButton(onClick = { passwordVisible = !passwordVisible }) {
+                    Icon(imageVector = image, contentDescription = null)
+                }
+            }
+        )
 }
 

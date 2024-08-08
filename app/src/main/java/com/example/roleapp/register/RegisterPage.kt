@@ -45,6 +45,7 @@ import com.example.roleapp.ui.theme.CustomButton
 import com.example.roleapp.ui.theme.CustomTextField
 import com.example.roleapp.ui.theme.DropdownComponent
 import com.example.roleapp.ui.theme.MainColor
+import com.example.roleapp.ui.theme.PasswordField
 import kotlinx.coroutines.delay
 
 @Composable
@@ -117,6 +118,7 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
             } else {
                 message = "User already registered. Use another email"
             }
+            viewModel.resetState()
         }
     }
 
@@ -138,14 +140,14 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
         colors = CardDefaults.cardColors(containerColor = Color.White),
         CardDefaults.cardElevation(defaultElevation = 4.dp)) {
 
-        Spacer(modifier = Modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
         CustomTextField(textField = username, onChange = {
-            email=it
+            username=it
         }, label = "Username", icon = Icons.Outlined.Person, inputType = KeyboardType.Text)
-        Spacer(modifier = Modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
         Column(Modifier.clickable { viewModel.validateEmail(email.text) }) {
             CustomTextField(textField = email, onChange = {
-                password = it
+                email = it
             }, label = "Email", icon = Icons.Outlined.Email, inputType = KeyboardType.Email)
             if (emailError_) {
                 Text(text = "Invalid email address", color = Color.Red,
@@ -153,29 +155,27 @@ fun RegisterLoginForm(navController: NavHostController, viewModel: RegisterViewM
                 )
             }
         }
-        Spacer(modifier = Modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
         Column(Modifier.clickable { viewModel.validatePassword(password.text) }) {
-            CustomTextField(textField = password, onChange = {
-                password = it
-            }, label = "Password", icon = Icons.Outlined.Lock, endIcon = Icons.Outlined.ArrowDropDown,
-                inputType = KeyboardType.Password)
+            PasswordField(password = password, onChange = { password = it
+            }, label = "password")
             if (passError_) {
                 Text(text = "Password must be at least 8 characters, contains uppercase and digits", color = Color.Red,
                     modifier = Modifier.padding(start = 16.dp)
                 )
             }
         }
-        Spacer(modifier = Modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
         DropdownComponent(items = roles, selectedText = selectedOption,
             onOptionSelected = { selectedOption = it})
-        Spacer(modifier = Modifier.padding(30.dp))
+        Spacer(modifier = Modifier.padding(10.dp))
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .wrapContentSize(align = Alignment.Center)
                 .padding(bottom = 30.dp)
         ) {
-            CustomButton(text = "Login", onClick = { viewModel.register(name = username.text, email = email.text,
+            CustomButton(text = "Register", onClick = { viewModel.register(name = username.text, email = email.text,
                 password= password.text, role = selectedOption) })
         }
         Spacer(modifier = Modifier.padding(20.dp))

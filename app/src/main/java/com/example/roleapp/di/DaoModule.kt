@@ -1,6 +1,7 @@
 package com.example.roleapp.di
 
 import android.content.Context
+import androidx.room.Room
 import com.example.roleapp.data.local.AppDatabase
 import com.example.roleapp.data.local.UserDao
 import dagger.Module
@@ -17,7 +18,7 @@ object DaoModule {
     @Provides
     @Singleton
     fun provideDatabase(@ApplicationContext context: Context) : AppDatabase {
-        return AppDatabase.getDatabase(context)
+        return Room.databaseBuilder(context,AppDatabase::class.java,"app_database").build()
     }
 
     @Provides

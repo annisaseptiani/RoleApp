@@ -31,6 +31,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.paging.CombinedLoadStates
 import androidx.paging.LoadState
 import androidx.paging.compose.LazyPagingItems
@@ -41,7 +42,7 @@ import com.example.roleapp.ui.theme.MainColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun UserScreen(navController: NavController, viewModel: UserViewModel) {
+fun UserScreen(navController: NavHostController, viewModel: UserViewModel) {
     val lazyItems : LazyPagingItems<Photos> = viewModel.pagingFlow.collectAsLazyPagingItems()
 
     val loadState = lazyItems.loadState

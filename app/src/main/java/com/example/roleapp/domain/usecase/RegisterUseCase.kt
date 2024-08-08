@@ -9,7 +9,7 @@ import javax.inject.Inject
 class RegisterUseCase @Inject constructor(
     private val userRepository: UserRepository) {
     suspend fun execute(user: User) : Boolean {
-        val existingUser = userRepository.getUserByEmail(user.email)
+        val existingUser : UserEntity? = userRepository.getUserByEmail(user.email)
         return if (existingUser==null) {
             userRepository.register(User(username = user.username,
                 email = user.email, password = encryptPassword(user.password),

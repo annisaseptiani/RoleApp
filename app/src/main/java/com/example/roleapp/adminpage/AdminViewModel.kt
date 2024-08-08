@@ -1,9 +1,14 @@
 package com.example.roleapp.adminpage
 
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.roleapp.data.model.UserEntity
 import com.example.roleapp.domain.model.User
 import com.example.roleapp.domain.repository.user.UserRepository
@@ -11,6 +16,7 @@ import com.example.roleapp.domain.usecase.UpdateDataUseCase
 import com.example.roleapp.domain.usecase.ValidateEmailUseCase
 import com.example.roleapp.domain.usecase.ValidatePasswordUseCase
 import com.example.roleapp.domain.usecase.VerifyPasswordUseCase
+import com.example.roleapp.ui.theme.navigation.Routes
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -31,10 +37,10 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
     private val _userList = MutableStateFlow<List<UserEntity>>(emptyList())
     val userList : StateFlow<List<UserEntity>> get() = _userList
 
-    val _isDeleteDialogOpen = MutableStateFlow(false)
+    val _isDeleteDialogOpen = MutableStateFlow<Boolean?>(false)
     val isDeleteDialogOpen = _isDeleteDialogOpen.asStateFlow()
 
-    val _isEditDialogOpen = MutableStateFlow(false)
+    val _isEditDialogOpen = MutableStateFlow<Boolean?>(false)
     val isEditDialogOpen = _isEditDialogOpen.asStateFlow()
 
     private val _verifyPass = MutableStateFlow<Boolean?>(false)
@@ -45,6 +51,17 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
 
     private var _isEmailValid = MutableLiveData<Boolean>()
     val emailValidator : LiveData<Boolean> get() = _isEmailValid
+
+    fun resetDeleteState(){
+        _deleteItem.value = false
+        _isDeleteDialogOpen.value = false
+        _verifyPass.value = false
+    }
+
+    fun resetEditState() {
+        _editItem.value = false
+        _isDeleteDialogOpen.value = false
+    }
 
     fun showDeleteDialog() {
         _isDeleteDialogOpen.value = true
@@ -84,6 +101,15 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
 
     }
 
+    fun logout(navController: NavHostController) {
+        repository.loggedOut()
+        navController.navigate(Routes.Login.routes) {
+            popUpTo(Routes.AdminPage.routes) {
+                inclusive = true
+            }
+        }
+    }
+
     fun verifyPassword(password: String) {
         viewModelScope.launch {
             _verifyPass.value = verifyPasswordUseCase.execute(password)
@@ -98,6 +124,10 @@ class AdminViewModel @Inject constructor(private val repository: UserRepository,
 
     fun validateEmail(email: String) {
         _isEmailValid.value = validateEmailUseCase.execute(email)
+    }
+
+    fun logoutUser() {
+        repository.loggedOut()
     }
 
 }

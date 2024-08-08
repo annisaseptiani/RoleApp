@@ -35,21 +35,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.example.roleapp.data.model.Role
 import com.example.roleapp.data.model.UserEntity
 import com.example.roleapp.ui.theme.CustomButton
 import com.example.roleapp.ui.theme.CustomTextField
 import com.example.roleapp.ui.theme.MainColor
+import com.example.roleapp.ui.theme.PasswordField
 import kotlinx.coroutines.delay
 
 @Composable
-fun AdminScreen(navController: NavController, viewModel: AdminViewModel) {
+fun AdminScreen(navController: NavHostController, viewModel: AdminViewModel) {
     val showEdit by viewModel.isEditDialogOpen.collectAsState()
     val showVerifyPassword by viewModel.isDeleteDialogOpen.collectAsState()
     var selectedItem by remember {
@@ -65,6 +68,7 @@ fun AdminScreen(navController: NavController, viewModel: AdminViewModel) {
 
     LaunchedEffect(isDeleteItem) {
         viewModel.listUser()
+        viewModel.resetDeleteState()
     }
 
 
@@ -74,6 +78,15 @@ fun AdminScreen(navController: NavController, viewModel: AdminViewModel) {
                 .fillMaxWidth()
                 .padding(20.dp)
         ) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(30.dp), horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically) {
+                Text(text = "Admin Page", color = MainColor, style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold)
+                CustomButton(text = "Logout", onClick = { viewModel.logout(navController) })
+            }
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -126,18 +139,11 @@ fun AdminScreen(navController: NavController, viewModel: AdminViewModel) {
                 }
             }
         }
-        if (showVerifyPassword) {
+        if (showVerifyPassword == true) {
             InputPassword(viewModel = viewModel, id = selectedItem!!.id)
         }
-        if (showEdit) {
-            Column(
-                Modifier
-                    .align(Alignment.Center)
-                    .fillMaxHeight(), verticalArrangement = Arrangement.Center
-            ) {
-
-                EditUser(viewModel, selectedItem!!)
-            }
+        if (showEdit == true) {
+            EditUser(viewModel, selectedItem!!)
         }
     }
 }
@@ -167,19 +173,20 @@ fun InputPassword(viewModel: AdminViewModel, id : Int) {
             } else {
                 error = true
             }
+            viewModel.resetDeleteState()
         }
     }
 
 
-    if (isDialogOpen) {
+    if (isDialogOpen==true) {
         Dialog(onDismissRequest = { viewModel.hideDeleteDialog() }) {
             Card(Modifier.wrapContentSize()) {
-                Text(text = "Input Password To Delete")
-                CustomTextField(textField = password, onChange = { password = it},
-                    label = "Password", icon = Icons.Outlined.Lock, inputType = KeyboardType.Password)
+                Text(text = "Input Password To Delete", modifier = Modifier.padding(5.dp))
+                PasswordField(password = password, onChange = { password = it
+                }, label = "password")
                 CustomButton(text = "Confirm", onClick = { viewModel.verifyPassword(password.text) })
                 if (error) {
-                    Text(text = "Wrong password", color=Color.Red)
+                    Text(modifier = Modifier.padding(5.dp), text = "Wrong password", color=Color.Red)
                 }
             }
         }

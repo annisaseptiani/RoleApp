@@ -1,5 +1,6 @@
 package com.example.roleapp.domain.usecase
 
+import android.util.Log
 import com.example.roleapp.domain.repository.user.UserRepository
 import java.security.MessageDigest
 import javax.inject.Inject
@@ -9,9 +10,11 @@ class LoginUseCase @Inject constructor(private val userRepository: UserRepositor
     suspend fun execute(email : String, password : String) : String {
         val encryptedPassword = encryptPassword(password)
         val userLogin = userRepository.login(email, encryptedPassword);
-        val role = ""
+        Log.d("TAG", "execute: $encryptedPassword")
+        var role = ""
         if (userLogin!=null) {
             userRepository.saveUser(email, encryptedPassword)
+            role = userLogin.role
             return role
         }
         return role
