@@ -98,4 +98,7 @@ dependencies {
     testImplementation ("androidx.room:room-testing:2.3.0")
     testImplementation ("androidx.arch.core:core-testing:2.1.0")
     testImplementation ("org.mockito:mockito-inline:4.0.0")
+    testImplementation ("com.squareup.okhttp3:mockwebserver:4.9.3")
+    testImplementation ("androidx.paging:paging-common-ktx:3.1.1")
+    testImplementation ("org.robolectric:robolectric:4.10")
 }

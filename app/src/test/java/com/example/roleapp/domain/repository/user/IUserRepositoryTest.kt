@@ -5,14 +5,12 @@ import com.example.roleapp.data.local.UserPreferences
 import com.example.roleapp.data.model.UserEntity
 import com.example.roleapp.domain.model.User
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
 import kotlinx.coroutines.test.runTest
-import org.junit.jupiter.api.BeforeEach
+import org.junit.Before
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
@@ -20,6 +18,7 @@ import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.any
 
 @ExperimentalCoroutinesApi
 class IUserRepositoryTest {
@@ -32,7 +31,7 @@ class IUserRepositoryTest {
 
     private lateinit var userRepository: IUserRepository
 
-    @BeforeEach
+    @Before
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         userRepository = IUserRepository(userDao, userPreferences)
@@ -68,7 +67,7 @@ class IUserRepositoryTest {
 
         userRepository.register(user)
 
-        verify(userDao, times(1)).registerUser(any(UserEntity::class.java))
+        verify(userDao, times(1)).registerUser(any())
     }
 
     @Test
@@ -133,17 +132,4 @@ class IUserRepositoryTest {
 
         assertEquals("password123", result)
     }
-}
-
-// UserRepository interface for testing
-interface UserRepository {
-    suspend fun login(username: String, password: String): UserEntity?
-    fun getAllUser(): Flow<List<UserEntity>>
-    suspend fun register(user: User)
-    suspend fun update(name: String, email: String, role: String, id: Int)
-    suspend fun saveUser(email: String, password: String)
-    suspend fun getUserByEmail(email: String): UserEntity?
-    fun loggedOut()
-
-    fun getUserPass() :String?
 }

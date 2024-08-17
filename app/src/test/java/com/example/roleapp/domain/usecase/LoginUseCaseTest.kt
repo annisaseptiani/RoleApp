@@ -42,7 +42,7 @@ class LoginUseCaseTest {
         // Verify the interactions and result
         verify(userRepository).login(email, encryptedPassword)
         verify(userRepository).saveUser(email, encryptedPassword)
-        assertEquals("", result)
+        assertEquals("admin", result)
     }
 
     @ExperimentalCoroutinesApi

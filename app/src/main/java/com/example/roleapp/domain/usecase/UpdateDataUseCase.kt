@@ -1,6 +1,5 @@
 package com.example.roleapp.domain.usecase
 
-import android.util.Log
 import com.example.roleapp.data.model.UserEntity
 import com.example.roleapp.domain.repository.user.UserRepository
 import javax.inject.Inject
@@ -18,7 +17,6 @@ class UpdateDataUseCase @Inject constructor(
                 false
             }
         } catch (e: Exception) {
-            Log.d("UpdateUseCase", e.message.toString())
             false
         }
     }
