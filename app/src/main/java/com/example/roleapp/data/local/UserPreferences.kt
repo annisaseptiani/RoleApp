@@ -3,7 +3,7 @@ package com.example.roleapp.data.local
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
+import androidx.security.crypto.MasterKey
 
 class UserPreferences (context: Context) {
         private val sharedPreferences: SharedPreferences =
@@ -24,11 +24,13 @@ class UserPreferences (context: Context) {
         }
 
     fun getEncryptedSharedPreferences(context: Context): SharedPreferences {
-        val masterKeyAlias = MasterKeys.getOrCreate(MasterKeys.AES256_GCM_SPEC)
+        val masterKey = MasterKey.Builder(context, MasterKey.DEFAULT_MASTER_KEY_ALIAS)
+            .setKeyScheme(MasterKey.KeyScheme.AES256_GCM)
+            .build()
         return EncryptedSharedPreferences.create(
-            "user_prefs",
-            masterKeyAlias,
             context,
+            "user_prefs",
+            masterKey,
             EncryptedSharedPreferences.PrefKeyEncryptionScheme.AES256_SIV,
             EncryptedSharedPreferences.PrefValueEncryptionScheme.AES256_GCM
         )

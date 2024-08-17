@@ -1,33 +1,25 @@
 package com.example.roleapp.domain.repository.user
 
-import android.content.Context
-import android.content.SharedPreferences
 import com.example.roleapp.data.local.UserDao
 import com.example.roleapp.data.local.UserPreferences
 import com.example.roleapp.data.model.UserEntity
 import com.example.roleapp.domain.model.User
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.flow.toList
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
-import org.junit.Before
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
 import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mock
-import org.mockito.Mockito.doReturn
-import org.mockito.Mockito.mock
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.anyOrNull
-import org.mockito.kotlin.whenever
 
 @ExperimentalCoroutinesApi
 class IUserRepositoryTest {
@@ -40,7 +32,7 @@ class IUserRepositoryTest {
 
     private lateinit var userRepository: IUserRepository
 
-    @Before
+    @BeforeEach
     fun setUp() {
         MockitoAnnotations.openMocks(this)
         userRepository = IUserRepository(userDao, userPreferences)
@@ -144,15 +136,13 @@ class IUserRepositoryTest {
 }
 
 // UserRepository interface for testing
-public interface UserRepository {
+interface UserRepository {
     suspend fun login(username: String, password: String): UserEntity?
     fun getAllUser(): Flow<List<UserEntity>>
     suspend fun register(user: User)
     suspend fun update(name: String, email: String, role: String, id: Int)
-    suspend fun delete(id: Int): Boolean
     suspend fun saveUser(email: String, password: String)
     suspend fun getUserByEmail(email: String): UserEntity?
-    suspend fun getRole(role: String): String
     fun loggedOut()
 
     fun getUserPass() :String?

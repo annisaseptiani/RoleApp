@@ -4,9 +4,7 @@ import com.example.roleapp.data.model.UserEntity
 import com.example.roleapp.domain.model.User
 import com.example.roleapp.domain.repository.user.UserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
-import org.hamcrest.CoreMatchers.any
 import org.junit.Before
 import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
@@ -43,9 +41,9 @@ class RegisterUseCaseTest {
     }
 
     @Test
-    fun `test registration with existing user`() = runBlockingTest {
+    fun `test registration with existing user`() = runTest {
         val user = User(username = "testUser", email = "test@example.com", password = "password", role = "user")
-        val existingUser : UserEntity? = UserEntity(id =1, name = "existingUser", email = "test@example.com", password = "existingPassword", role = "user")
+        val existingUser = UserEntity(id =1, name = "existingUser", email = "test@example.com", password = "existingPassword", role = "user")
 
         `when`(userRepository.getUserByEmail(user.email)).thenReturn(existingUser)
 

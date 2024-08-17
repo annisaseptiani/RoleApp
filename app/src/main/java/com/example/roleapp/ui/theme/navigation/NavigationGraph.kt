@@ -1,8 +1,8 @@
 package com.example.roleapp.ui.theme.navigation
 
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,7 +19,7 @@ import com.example.roleapp.userpage.UserViewModel
 fun NavigationGraph(modifier: Modifier, navController: NavHostController,
                     loginViewModel: LoginViewModel, registerViewModel: RegisterViewModel,
                     userViewModel: UserViewModel, adminViewModel: AdminViewModel) {
-    NavHost(navController = navController, startDestination = Routes.Login.routes) {
+    NavHost(modifier = modifier.fillMaxSize(),navController = navController, startDestination = Routes.Login.routes) {
         composable(Routes.Login.routes){
             LoginScreen(navController = navController, viewModel = loginViewModel)
         }

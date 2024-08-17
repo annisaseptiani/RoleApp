@@ -1,10 +1,8 @@
 package com.example.roleapp.domain.usecase
 
 import com.example.roleapp.data.model.UserEntity
-import com.example.roleapp.domain.model.User
 import com.example.roleapp.domain.repository.user.UserRepository
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test

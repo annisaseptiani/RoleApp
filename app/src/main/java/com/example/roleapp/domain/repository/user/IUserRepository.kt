@@ -1,9 +1,5 @@
 package com.example.roleapp.domain.repository.user
 
-import android.content.Context
-import android.content.SharedPreferences
-import androidx.security.crypto.EncryptedSharedPreferences
-import androidx.security.crypto.MasterKeys
 import com.example.roleapp.data.local.UserDao
 import com.example.roleapp.data.local.UserPreferences
 import com.example.roleapp.data.model.UserEntity
@@ -45,7 +41,7 @@ class IUserRepository @Inject constructor(private val userDao: UserDao,
     }
 
     override suspend fun getUserByEmail(email: String) : UserEntity? {
-        val userEntity = userDao?.getUserByEmail(email)
+        val userEntity = userDao.getUserByEmail(email)
         return userEntity?.let { UserEntity(it.id, it.name, it.email, it.password, it.role) }
     }
 
