@@ -144,7 +144,7 @@ class IUserRepositoryTest {
 }
 
 // UserRepository interface for testing
-interface UserRepository {
+public interface UserRepository {
     suspend fun login(username: String, password: String): UserEntity?
     fun getAllUser(): Flow<List<UserEntity>>
     suspend fun register(user: User)

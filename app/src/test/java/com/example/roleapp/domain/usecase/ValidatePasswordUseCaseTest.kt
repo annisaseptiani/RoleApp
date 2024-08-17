@@ -2,11 +2,15 @@ package com.example.roleapp.domain.usecase
 
 import com.example.roleapp.util.PasswordValidator
 import org.junit.Before
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
+import org.junit.runner.RunWith
+import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`
+import org.mockito.junit.MockitoJUnitRunner
+
 
 class ValidatePasswordUseCaseTest {
     private lateinit var passwordValidator: PasswordValidator

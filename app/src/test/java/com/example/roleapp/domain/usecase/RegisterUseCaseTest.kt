@@ -8,8 +8,8 @@ import kotlinx.coroutines.test.runBlockingTest
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.CoreMatchers.any
 import org.junit.Before
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify

@@ -1,8 +1,6 @@
 package com.example.roleapp.di
 
 import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
 import com.example.roleapp.data.local.UserDao
 import com.example.roleapp.data.local.UserPreferences
 import com.example.roleapp.data.remote.RemoteApi

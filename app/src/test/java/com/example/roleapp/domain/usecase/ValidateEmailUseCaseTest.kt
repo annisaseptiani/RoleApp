@@ -2,8 +2,8 @@ package com.example.roleapp.domain.usecase
 
 import com.example.roleapp.util.EmailValidator
 import org.junit.Before
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.`when`

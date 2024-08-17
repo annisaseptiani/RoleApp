@@ -1,8 +1,8 @@
 package com.example.roleapp.util
 
 import org.junit.Before
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 
 class PasswordValidatorTest {
     private lateinit var passwordValidator: PasswordValidator

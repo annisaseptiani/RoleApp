@@ -2,8 +2,8 @@ package com.example.roleapp.domain.usecase
 
 import com.example.roleapp.domain.repository.user.UserRepository
 import org.junit.Before
+import org.junit.Test
 import org.junit.jupiter.api.Assertions.*
-import org.junit.jupiter.api.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito.verify
